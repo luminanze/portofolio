@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="id" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luminanze - Building the Next-Gen Animation Ecosystem</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'brand-purple': '#8A2BE2',
+                        dark: {
+                            bg: '#0A0A0A',
+                            surface: '#141414',
+                        },
+                        light: {
+                            bg: '#F8F9FA',
+                            surface: '#FFFFFF',
+                        }
+                    },
+                    boxShadow: {
+                        'glow': '0 0 20px rgba(138, 43, 226, 0.4)',
+                        'glow-lg': '0 0 30px rgba(138, 43, 226, 0.6)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* Scroll Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Glassmorphism utilities */
+        .glass {
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        html:not(.dark) .glass {
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        /* Infinite Marquee */
+        .marquee-container {
+            display: flex;
+            overflow: hidden;
+            user-select: none;
+            gap: 2rem;
+        }
+        .marquee-content {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-around;
+            min-width: 100%;
+            gap: 2rem;
+            animation: scroll 15s linear infinite;
+        }
+        @keyframes scroll {
+            from { transform: translateX(0); }
+            to { transform: translateX(calc(-100% - 2rem)); }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0A0A0A;
+        }
+        html:not(.dark) ::-webkit-scrollbar-track {
+            background: #F8F9FA;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8A2BE2;
+        }
+    </style>
+</head>
+<body class="bg-light-bg text-gray-900 dark:bg-dark-bg dark:text-gray-100 transition-colors duration-300 antialiased">
+
+    <!-- Navigation -->
+    <header class="fixed w-full top-0 z-50 glass transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <!-- Logo -->
+                <a href="#" class="text-2xl font-bold tracking-tight">
+                    Luminan<span class="text-brand-purple">z</span>e
+                </a>
+
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <!-- Theme Toggle -->
+                    <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors" aria-label="Toggle Theme">
+                        <i data-lucide="sun" id="icon-sun" class="w-5 h-5 hidden dark:block text-brand-purple"></i>
+                        <i data-lucide="moon" id="icon-moon" class="w-5 h-5 block dark:hidden text-brand-purple"></i>
+                    </button>
+
+                    <!-- Desktop Menu (Hidden on small screens, using drawer for all as requested, but keeping this simple structure) -->
+                    <button id="menu-btn" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors relative z-[60]">
+                        <i data-lucide="menu" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Overlay -->
+    <div id="drawer" class="fixed inset-0 z-50 pointer-events-none">
+        <div id="drawer-bg" class="absolute inset-0 bg-black/50 backdrop-blur-sm opacity-0 transition-opacity duration-300"></div>
+        <nav id="drawer-nav" class="absolute top-0 right-0 h-full w-64 bg-light-surface dark:bg-dark-surface shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out border-l border-brand-purple/20">
+            <div class="p-8 flex flex-col h-full pt-24 gap-6">
+                <a href="#home" class="drawer-link text-lg font-medium hover:text-brand-purple transition-colors">Home (Ecosystem)</a>
+                <a href="#team" class="drawer-link text-lg font-medium hover:text-brand-purple transition-colors">Team & Legacy</a>
+                <a href="#contact" class="drawer-link text-lg font-medium hover:text-brand-purple transition-colors">Hubungi Kami</a>
+            </div>
+        </nav>
+    </div>
+
+    <main>
+        <!-- BAGIAN 1: HOME -->
+        <section id="home" class="pt-32 pb-20 px-4 min-h-screen flex flex-col justify-center relative">
+            <!-- Decorative Background Element -->
+            <div class="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-brand-purple/10 rounded-full blur-[120px] pointer-events-none"></div>
+
+            <div class="max-w-7xl mx-auto text-center w-full relative z-10 reveal">
+                <!-- Headlines -->
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 tracking-tight">
+                    Building the Next-Gen <br class="hidden md:block" />
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-purple to-purple-400">Animation Ecosystem.</span>
+                </h1>
+                
+                <p class="mt-4 text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-3xl mx-auto mb-12">
+                    Luminan<span class="text-brand-purple">z</span>e mengintegrasikan alur kerja rumah produksi kreatif berbasis AI (Lumi Studio<span class="text-brand-purple">z</span>) ke dalam platform distribusi streaming mandiri dua format (Lumi<span class="text-brand-purple">z</span>).
+                </p>
+
+                <!-- Video Showcase Placeholder -->
+                <div class="max-w-4xl mx-auto relative group">
+                    <div class="absolute -inset-1 bg-brand-purple rounded-2xl opacity-20 group-hover:opacity-40 blur-lg transition duration-500"></div>
+                    <div class="relative aspect-video rounded-xl overflow-hidden border border-brand-purple/30 bg-gray-900 shadow-glow flex items-center justify-center">
+                        <!-- GANTI URL VIDEO DI SINI -->
+                        <!-- Jika menggunakan tag video html5: -->
+                        <!-- <video src="URL_VIDEO_ANDA.mp4" controls class="w-full h-full object-cover"></video> -->
+                        
+                        <!-- Placeholder Content (Hapus ini jika memasukkan video) -->
+                        <div class="text-center p-6">
+                            <i data-lucide="play-circle" class="w-16 h-16 text-brand-purple mx-auto mb-4 opacity-80"></i>
+                            <p class="text-gray-400 text-sm">Video Showcase Placeholder (16:9)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pipeline Section -->
+        <section class="py-20 px-4 bg-gray-50 dark:bg-dark-surface/50 border-y border-gray-200 dark:border-gray-800">
+            <div class="max-w-7xl mx-auto reveal">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold mb-4">How Lumi Studio<span class="text-brand-purple">z</span> Works</h2>
+                    <p class="text-gray-600 dark:text-gray-400">Strategi & Jalur Production House</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Step 1 -->
+                    <div class="p-8 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100 dark:border-gray-800 hover:border-brand-purple/50 transition-colors group">
+                        <div class="w-12 h-12 rounded-lg bg-brand-purple/10 flex items-center justify-center mb-6 text-brand-purple group-hover:scale-110 transition-transform">
+                            <i data-lucide="book-open" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Step 1: Original Story & Script</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                            Pengembangan cerita dan naskah orisinal yang kuat sebagai fondasi utama sebelum menyentuh teknologi.
+                        </p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="p-8 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100 dark:border-gray-800 hover:border-brand-purple/50 transition-colors group">
+                        <div class="w-12 h-12 rounded-lg bg-brand-purple/10 flex items-center justify-center mb-6 text-brand-purple group-hover:scale-110 transition-transform">
+                            <i data-lucide="cpu" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Step 2: AI-Assisted Visual Pipeline</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                            Transformasi naskah menjadi visual dan animasi oleh Lumi Studio<span class="text-brand-purple">z</span> dengan pengawasan standar estetika ketat.
+                        </p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="p-8 rounded-2xl bg-white dark:bg-dark-surface border border-gray-100 dark:border-gray-800 hover:border-brand-purple/50 transition-colors group">
+                        <div class="w-12 h-12 rounded-lg bg-brand-purple/10 flex items-center justify-center mb-6 text-brand-purple group-hover:scale-110 transition-transform">
+                            <i data-lucide="monitor-play" class="w-6 h-6"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Step 3: Hybrid Streaming</h3>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                            Distribusi penayangan hasil akhir di platform Lumi<span class="text-brand-purple">z</span> dalam format Landscape 16:9 Cinema dan Vertical 9:16 Shorts.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Roadmap Section -->
+        <section class="py-24 px-4">
+            <div class="max-w-4xl mx-auto reveal">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold mb-4">Project Roadmap</h2>
+                    <p class="text-gray-600 dark:text-gray-400">Timeline progres pengembangan ekosistem.</p>
+                </div>
+
+                <div class="relative border-l border-brand-purple/30 ml-3 md:ml-0 md:pl-0">
+                    <!-- Phase 1 -->
+                    <div class="mb-10 ml-6 md:ml-0 flex flex-col md:flex-row md:justify-between md:items-center w-full">
+                        <div class="order-1 md:w-5/12 hidden md:block"></div>
+                        <div class="z-20 flex items-center order-1 bg-brand-purple shadow-xl w-6 h-6 rounded-full absolute -left-3 md:left-1/2 md:-ml-3 border-4 border-light-bg dark:border-dark-bg"></div>
+                        <div class="order-1 bg-white dark:bg-dark-surface border border-brand-purple/30 rounded-xl p-6 md:w-5/12 shadow-glow">
+                            <span class="text-brand-purple text-sm font-bold tracking-wide uppercase">Phase 1 (Current)</span>
+                            <h3 class="font-bold text-lg mt-2 mb-1">Foundation & Blueprint</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">Pembentukan struktur ZK Group, perancangan sistem pipeline Lumi Studio<span class="text-brand-purple">z</span>, dan kurasi konsep cerita.</p>
+                        </div>
+                    </div>
+
+                    <!-- Phase 2 -->
+                    <div class="mb-10 ml-6 md:ml-0 flex flex-col md:flex-row md:justify-between md:items-center w-full">
+                        <div class="order-1 bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-800 rounded-xl p-6 md:w-5/12">
+                            <span class="text-gray-500 text-sm font-bold tracking-wide uppercase">Phase 2</span>
+                            <h3 class="font-bold text-lg mt-2 mb-1">Prototype & First Teaser</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">Pengembangan prototipe web streaming Lumi<span class="text-brand-purple">z</span> dan produksi animasi teaser perdana.</p>
+                        </div>
+                        <div class="z-20 flex items-center order-1 bg-gray-300 dark:bg-gray-700 w-6 h-6 rounded-full absolute -left-3 md:left-1/2 md:-ml-3 border-4 border-light-bg dark:border-dark-bg"></div>
+                        <div class="order-1 md:w-5/12 hidden md:block"></div>
+                    </div>
+
+                    <!-- Phase 3 -->
+                    <div class="ml-6 md:ml-0 flex flex-col md:flex-row md:justify-between md:items-center w-full">
+                        <div class="order-1 md:w-5/12 hidden md:block"></div>
+                        <div class="z-20 flex items-center order-1 bg-gray-300 dark:bg-gray-700 w-6 h-6 rounded-full absolute -left-3 md:left-1/2 md:-ml-3 border-4 border-light-bg dark:border-dark-bg"></div>
+                        <div class="order-1 bg-white dark:bg-dark-surface border border-gray-200 dark:border-gray-800 rounded-xl p-6 md:w-5/12">
+                            <span class="text-gray-500 text-sm font-bold tracking-wide uppercase">Phase 3</span>
+                            <h3 class="font-bold text-lg mt-2 mb-1">Public Beta Launch</h3>
+                            <p class="text-gray-600 dark:text-gray-400 text-sm">Peluncuran platform Lumi<span class="text-brand-purple">z</span> secara publik beserta penayangan katalog IP orisinal.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BAGIAN 2: TEAM & ARTISTIC LEGACY -->
+        <section id="team" class="py-24 px-4 bg-gray-50 dark:bg-dark-surface/30">
+            <div class="max-w-7xl mx-auto reveal">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold mb-4">Core Leadership</h2>
+                </div>
+
+                <div class="flex justify-center items-center gap-8 md:gap-16 flex-wrap">
+                    <!-- Leader 1 -->
+                    <div class="text-center group">
+                        <div class="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden mb-4 border border-gray-200 dark:border-gray-800 group-hover:border-brand-purple/50 transition-all duration-300">
+                            <!-- GANTI GAMBAR AVATAR 1 DI SINI -->
+                            <img src="https://lh3.googleusercontent.com/d/1RpV4m6arOXC6mpGI-4OJp2gOVaLJEahN" alt="Z.K. Avatar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <h3 class="text-xl font-bold">Z.K.</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Founder & CEO</p>
+                    </div>
+
+                    <!-- Leader 2 -->
+                    <div class="text-center group">
+                        <div class="w-48 h-48 md:w-56 md:h-56 rounded-2xl overflow-hidden mb-4 border border-gray-200 dark:border-gray-800 group-hover:border-brand-purple/50 transition-all duration-300">
+                            <!-- GANTI GAMBAR AVATAR 2 DI SINI -->
+                            <img src="https://lh3.googleusercontent.com/d/17XDFMuP5_reH6BSxDScMCO_WxJrmlcbm" alt="A.F.S. Avatar" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        </div>
+                        <h3 class="text-xl font-bold">A.F.S.</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Co-Founder & CMO</p>
+                    </div>
+                </div>
+
+                <!-- Supported By Marquee -->
+                <div class="mt-24 mb-16">
+                    <p class="text-center text-sm font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-widest mb-8">Supported, Powered & Supervised By:</p>
+                    
+                    <div class="marquee-container w-full max-w-4xl mx-auto opacity-70 hover:opacity-100 transition-opacity">
+                        <!-- Duplicated for infinite effect -->
+                        <div class="marquee-content">
+                            <!-- Partner 1 -->
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded overflow-hidden bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
+                                    <img src="https://lh3.googleusercontent.com/d/1gMYi_cHs5111GUrEaLSRisfPEEKN95x6" alt="ZK Group Logo" class="w-full h-full object-cover">
+                                </div>
+                                <span class="font-bold text-lg">ZK Group</span>
+                            </div>
+                            
+                            <!-- Partner 2 (Clickable) -->
+                            <a href="https://opensea.io/collection/nezen" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-brand-purple transition-colors">
+                                <div class="w-8 h-8 rounded overflow-hidden bg-gray-200 dark:bg-gray-800 flex items-center justify-center border border-gray-300 dark:border-gray-700">
+                                    <img src="https://lh3.googleusercontent.com/d/13_YeKl6eI4V9C-EHYTepmG22ZtaZe9Xe" alt="Nezen Logo" class="w-full h-full object-cover">
+                                </div>
+                                <span class="font-bold text-lg">Nezen</span>
+                            </a>
+                            
+                            <!-- Partner 3 -->
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded overflow-hidden bg-gray-200 dark:bg-gray-800 flex items-center justify-center border border-gray-300 dark:border-gray-700">
+                                    <img src="https://lh3.googleusercontent.com/d/1hovhnQ-DRxuy7RNPymGUilyWVqevnabn" alt="Baizzu Studio Logo" class="w-full h-full object-cover">
+                                </div>
+                                <span class="font-bold text-lg">Baizzu Studio</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Duplicate content for seamless scrolling -->
+                        <div class="marquee-content" aria-hidden="true">
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded overflow-hidden bg-gray-200 dark:bg-gray-800 flex items-center justify-center">
+                                    <img src="https://lh3.googleusercontent.com/d/1gMYi_cHs5111GUrEaLSRisfPEEKN95x6" alt="ZK Group Logo" class="w-full h-full object-cover">
+                                </div>
+                                <span class="font-bold text-lg">ZK Group</span>
+                            </div>
+                            
+                            <!-- Partner 2 (Clickable) -->
+                            <a href="https://opensea.io/collection/nezen" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 hover:text-brand-purple transition-colors">
+                                <div class="w-8 h-8 rounded overflow-hidden bg-gray-200 dark:bg-gray-800 flex items-center justify-center border border-gray-300 dark:border-gray-700">
+                                    <img src="https://lh3.googleusercontent.com/d/13_YeKl6eI4V9C-EHYTepmG22ZtaZe9Xe" alt="Nezen Logo" class="w-full h-full object-cover">
+                                </div>
+                                <span class="font-bold text-lg">Nezen</span>
+                            </a>
+
+                            <!-- Partner 3 -->
+                            <div class="flex items-center gap-2">
+                                <div class="w-8 h-8 rounded overflow-hidden bg-gray-200 dark:bg-gray-800 flex items-center justify-center border border-gray-300 dark:border-gray-700">
+                                    <img src="https://lh3.googleusercontent.com/d/1hovhnQ-DRxuy7RNPymGUilyWVqevnabn" alt="Baizzu Studio Logo" class="w-full h-full object-cover">
+                                </div>
+                                <span class="font-bold text-lg">Baizzu Studio</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- The Nezen Standard -->
+                <div class="max-w-4xl mx-auto glass rounded-2xl p-8 md:p-12 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-brand-purple/10 rounded-full blur-[80px] -mr-32 -mt-32 pointer-events-none group-hover:bg-brand-purple/20 transition-colors duration-500"></div>
+                    
+                    <div class="relative z-10 flex flex-col md:flex-row items-center gap-8">
+                        <div class="w-20 h-20 shrink-0 rounded-full overflow-hidden border-2 border-brand-purple/50 shadow-glow flex items-center justify-center bg-gray-200 dark:bg-gray-900">
+                            <img src="https://lh3.googleusercontent.com/d/13_YeKl6eI4V9C-EHYTepmG22ZtaZe9Xe" alt="Nezen Logo" class="w-full h-full object-cover">
+                        </div>
+                        
+                        <div>
+                            <h3 class="text-2xl font-bold mb-4">The Nezen Standard: Artistic Quality Benchmark</h3>
+                            <p class="text-gray-600 dark:text-gray-300 leading-relaxed mb-6">
+                                Sebelum mengembangkan ekosistem AI di Luminan<span class="text-brand-purple">z</span>e, fondasi kreatif kami berakar dari Nezen (2022) sebuah proyek dan kolektif NFT berbasis karya seni murni buatan tangan (handmade/non-AI) yang berhasil mencatatkan kapitalisasi pasar (market cap) sebesar $10,000 (Rp100 Juta). Di dalam ekosistem Luminan<span class="text-brand-purple">z</span>e, Nezen berdiri secara independen dan tidak terlibat dalam teknis produksi AI, melainkan bertindak sebagai pengawas standar kualitas (bare minimum benchmark) guna memastikan setiap karya AI dari Lumi Studio<span class="text-brand-purple">z</span> tetap memiliki nilai artistik yang setara dengan karya tangan.
+                            </p>
+                            <a href="https://opensea.io/collection/nezen" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-dark-bg border border-gray-200 dark:border-gray-700 hover:border-brand-purple hover:text-brand-purple rounded-full text-sm font-medium transition-all shadow-sm hover:shadow-glow">
+                                Lihat Koleksi Nezen (2022) di OpenSea 
+                                <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- BAGIAN 3: HUBUNGI KAMI -->
+        <section id="contact" class="py-24 px-4 relative">
+            <div class="max-w-3xl mx-auto reveal">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold mb-4">Collaborate With Our Ecosystem</h2>
+                    <p class="text-gray-600 dark:text-gray-400">Mari diskusikan potensi kemitraan atau integrasi teknologi bersama kami.</p>
+                </div>
+
+                <div class="bg-white dark:bg-dark-surface p-8 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-xl">
+                    <form onsubmit="event.preventDefault();" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nama</label>
+                                <input type="text" id="name" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-dark-bg focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none transition-all" placeholder="Nama Anda">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
+                                <input type="email" id="email" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-dark-bg focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none transition-all" placeholder="email@perusahaan.com">
+                            </div>
+                        </div>
+                        <div>
+                            <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pesan</label>
+                            <textarea id="message" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-dark-bg focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none transition-all resize-none" placeholder="Ceritakan tujuan Anda..."></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-4 bg-brand-purple hover:bg-purple-700 text-white rounded-xl font-medium transition-colors shadow-glow-lg flex justify-center items-center gap-2">
+                            Kirim Pesan
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                        </button>
+                    </form>
+
+                    <div class="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row items-center justify-center gap-6">
+                        <a href="mailto:luminanze.team@gmail.com" class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-brand-purple dark:hover:text-brand-purple transition-colors">
+                            <i data-lucide="mail" class="w-5 h-5"></i>
+                            luminanze.team@gmail.com
+                        </a>
+                        <a href="https://instagram.com/watchlumiz" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-brand-purple dark:hover:text-brand-purple transition-colors">
+                            <i data-lucide="instagram" class="w-5 h-5"></i>
+                            <span>@watchlumi<span class="text-brand-purple">z</span></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-gray-200 dark:border-gray-900 bg-white dark:bg-dark-bg text-center text-sm text-gray-500 dark:text-gray-500">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>&copy; 2026 Luminan<span class="text-brand-purple">z</span>e Group. Part of ZK Group. Production by Lumi Studio<span class="text-brand-purple">z</span>. Artistic Standard Supervised by Nezen.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Initialize Lucide Icons with a safety check
+        if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+        } else {
+            console.error("Lucide Icons library failed to load from CDN.");
+        }
+
+        // --- Theme Toggle Logic ---
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const htmlElement = document.documentElement;
+        
+        // Check local storage or system preference
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+        } else {
+            htmlElement.classList.remove('dark');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            htmlElement.classList.toggle('dark');
+            if (htmlElement.classList.contains('dark')) {
+                localStorage.theme = 'dark';
+            } else {
+                localStorage.theme = 'light';
+            }
+        });
+
+        // --- Drawer Menu Logic ---
+        const menuBtn = document.getElementById('menu-btn');
+        const drawer = document.getElementById('drawer');
+        const drawerBg = document.getElementById('drawer-bg');
+        const drawerNav = document.getElementById('drawer-nav');
+        const drawerLinks = document.querySelectorAll('.drawer-link');
+        let isDrawerOpen = false;
+
+        function toggleDrawer() {
+            isDrawerOpen = !isDrawerOpen;
+            
+            if (isDrawerOpen) {
+                // Open drawer
+                drawer.classList.remove('pointer-events-none');
+                drawerBg.classList.remove('opacity-0');
+                drawerBg.classList.add('opacity-100');
+                drawerNav.classList.remove('translate-x-full');
+                drawerNav.classList.add('translate-x-0');
+                
+                // Change icon to close (X)
+                menuBtn.innerHTML = '<i data-lucide="x" class="w-6 h-6"></i>';
+                lucide.createIcons();
+            } else {
+                // Close drawer
+                drawerBg.classList.remove('opacity-100');
+                drawerBg.classList.add('opacity-0');
+                drawerNav.classList.remove('translate-x-0');
+                drawerNav.classList.add('translate-x-full');
+                
+                // Delay pointer events none until animation finishes
+                setTimeout(() => {
+                    if(!isDrawerOpen) drawer.classList.add('pointer-events-none');
+                }, 300);
+
+                // Change icon back to menu
+                menuBtn.innerHTML = '<i data-lucide="menu" class="w-6 h-6"></i>';
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+            }
+        }
+
+        menuBtn.addEventListener('click', toggleDrawer);
+        drawerBg.addEventListener('click', toggleDrawer);
+        
+        // Close drawer on link click
+        drawerLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if(isDrawerOpen) toggleDrawer();
+            });
+        });
+
+        // --- Scroll Reveal Animation Logic ---
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealCallback = (entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Stop observing once revealed
+                }
+            });
+        };
+
+        const revealOptions = {
+            threshold: 0.1, // Trigger when 10% of element is visible
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const revealObserver = new IntersectionObserver(revealCallback, revealOptions);
+
+        revealElements.forEach(el => {
+            revealObserver.observe(el);
+        });
+    </script>
+</body>
+</html>
