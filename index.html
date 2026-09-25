@@ -168,17 +168,20 @@
                     Luminan<span class="text-brand-purple">z</span>e mengintegrasikan alur kerja rumah produksi kreatif berbasis AI (Lumi<span class="text-brand-purple">z</span>tudio) ke dalam platform distribusi streaming mandiri dua format (Lumi<span class="text-brand-purple">z</span>).
                 </p>
 
-                <!-- Video Showcase Placeholder -->
+                <!-- Video Showcase -->
                 <div class="max-w-4xl mx-auto relative group">
                     <div class="absolute -inset-1 bg-brand-purple rounded-2xl opacity-20 group-hover:opacity-40 blur-lg transition duration-500"></div>
-                    <div class="relative aspect-video rounded-xl overflow-hidden border border-brand-purple/30 bg-gray-900 shadow-glow flex items-center justify-center">
-                        <!-- Video Trailer dari Google Drive -->
+                    <div class="relative aspect-video rounded-xl overflow-hidden border border-brand-purple/30 bg-gray-900 shadow-glow flex items-center justify-center group/vid">
+                        
+                        <!-- Menggunakan iFrame Bawaan Google Drive (Siap untuk GitHub Pages) -->
                         <iframe 
                             src="https://drive.google.com/file/d/1DpOu5Tw0AsG5iVkwVPt-AWhUTcX8IXFs/preview" 
                             class="absolute inset-0 w-full h-full border-0" 
-                            allow="autoplay; encrypted-media; fullscreen" 
-                            allowfullscreen>
+                            allow="autoplay; fullscreen; encrypted-media; picture-in-picture"
+                            allowfullscreen
+                            title="Luminanze Trailer">
                         </iframe>
+
                     </div>
                 </div>
             </div>
@@ -396,20 +399,20 @@
                 </div>
 
                 <div class="bg-white dark:bg-dark-surface p-8 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-xl">
-                    <form onsubmit="event.preventDefault();" class="space-y-6">
+                    <form id="contact-form" class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Nama</label>
-                                <input type="text" id="name" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-dark-bg focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none transition-all" placeholder="Nama Anda">
+                                <input type="text" id="name" required class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-dark-bg focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none transition-all" placeholder="Nama Anda">
                             </div>
                             <div>
                                 <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
-                                <input type="email" id="email" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-dark-bg focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none transition-all" placeholder="email@perusahaan.com">
+                                <input type="email" id="email" required class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-dark-bg focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none transition-all" placeholder="email@perusahaan.com">
                             </div>
                         </div>
                         <div>
                             <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Pesan</label>
-                            <textarea id="message" rows="4" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-dark-bg focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none transition-all resize-none" placeholder="Ceritakan tujuan Anda..."></textarea>
+                            <textarea id="message" rows="4" required class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-dark-bg focus:ring-2 focus:ring-brand-purple focus:border-transparent outline-none transition-all resize-none" placeholder="Ceritakan tujuan Anda..."></textarea>
                         </div>
                         <button type="submit" class="w-full py-4 bg-brand-purple hover:bg-purple-700 text-white rounded-xl font-medium transition-colors shadow-glow-lg flex justify-center items-center gap-2">
                             Kirim Pesan
@@ -541,6 +544,28 @@
         revealElements.forEach(el => {
             revealObserver.observe(el);
         });
+
+        // --- Contact Form Logic (Mailto Redirect) ---
+        const contactForm = document.getElementById('contact-form');
+        
+        if (contactForm) {
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault(); // Mencegah reload halaman
+                
+                // Mengambil nilai input
+                const name = document.getElementById('name').value;
+                const email = document.getElementById('email').value;
+                const message = document.getElementById('message').value;
+                
+                // Menyiapkan format link email
+                const destinationEmail = "luminanze.team@gmail.com";
+                const subject = encodeURIComponent("Pesan Kemitraan - Website Luminanze");
+                const body = encodeURIComponent(`Halo Tim Luminanze,\n\nNama: ${name}\nEmail: ${email}\n\nPesan:\n${message}\n\n---`);
+                
+                // Membuka aplikasi email bawaan
+                window.location.href = `mailto:${destinationEmail}?subject=${subject}&body=${body}`;
+            });
+        }
     </script>
 </body>
 </html>
