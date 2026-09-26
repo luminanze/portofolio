@@ -191,12 +191,23 @@
         
         <!-- Teks Ajakan & Tombol Menuju Website Streaming Lumiz -->
 <div class="mt-10 flex flex-col items-center justify-center gap-4 text-center">
-    <p class="text-gray-300 text-sm sm:text-base max-w-lg">
-        Ingin menonton lebih lanjut? Silakan klik tombol di bawah ini untuk langsung menuju ke platform streaming <span class="text-white font-semibold">Lumi<span class="text-brand-purple">z</span>:
+    <p class="text-gray-300 text-base sm:text-lg font-medium tracking-wide">
+        Ingin menonton film lebih lanjut?
     </p>
-    <a href="https://luminanze.github.io/Lumiz/" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 px-8 py-4 bg-brand-purple hover:bg-purple-700 text-white font-semibold rounded-full shadow-glow hover:shadow-glow-lg transition-all duration-300 transform hover:-translate-y-0.5 group">
-        <span>Tonton Sekarang di <span class="text-white font-semibold">Lumiz</span>
-        <i data-lucide="arrow-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+    
+    <a href="https://luminanze.github.io/Lumiz/" target="_blank" rel="noopener noreferrer" 
+       class="relative inline-flex items-center gap-3 px-8 py-4 bg-white text-gray-950 font-bold rounded-full shadow-[0_0_20px_rgba(255,255,255,0.25)] hover:shadow-[0_0_35px_rgba(168,85,247,0.7)] transition-all duration-500 transform hover:-translate-y-1 hover:scale-105 active:scale-95 group overflow-hidden">
+        
+        <!-- Efek Kilau Cahaya (Muncul saat di-hover) -->
+        <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-purple-200/50 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out"></span>
+        
+        <!-- Teks Tombol -->
+        <span class="relative z-10 tracking-wide">
+            Tonton sekarang di Lumi<span class="text-brand-purple font-extrabold">z</span>
+        </span>
+        
+        <!-- Ikon Panah Beranimasi -->
+        <i data-lucide="arrow-right" class="relative z-10 w-5 h-5 text-gray-950 group-hover:text-brand-purple group-hover:translate-x-1.5 transition-all duration-300"></i>
     </a>
 </div>
 
